@@ -1,4 +1,5 @@
 const { GraphQLServer } = require("graphql-yoga");
+const { v4: uuidv4 } = require("uuid");
 const books = [
   {
     id: "1",
@@ -42,20 +43,25 @@ const typeDefs = `
         price: Int!
         isTopTen: Boolean
         numbers: [Int!]!
-        publisher: publisher
-        books: [book!]!
+        publisher: Publisher
+        books: [Book!]!
     }
 
-    type publisher {
+    type Publisher {
         name: String!,
         author: String!,
         edition: Int
     }
 
-    type book {
+    type Book {
         id: ID!,
         name: String!
-        publisher: publisher
+        price: Int!
+        publisher: Publisher
+    }
+
+    type Mutation {
+        addBook(name: String!, price: Int!): [Book!]!
     }
 `;
 
@@ -81,6 +87,18 @@ const resolvers = {
       };
     },
     books() {
+      return books;
+    },
+  },
+  Mutation: {
+    addBook(parent, args, ctx, info) {
+      const { name, price } = args;
+      books.push({
+        id: uuidv4(),
+        name,
+        price,
+      });
+
       return books;
     },
   },
