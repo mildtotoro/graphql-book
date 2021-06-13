@@ -62,6 +62,7 @@ const typeDefs = `
 
     type Mutation {
         addBook(name: String!, price: Int!): [Book!]!
+        updateBook(id: ID!, name: String, price: Int): Book!
     }
 `;
 
@@ -100,6 +101,23 @@ const resolvers = {
       });
 
       return books;
+    },
+    updateBook(parent, args, ctx, info) {
+      const { id, name, price } = args;
+      const book = books.find((b) => {
+        return b.id === id;
+      });
+
+      if (!book) {
+        throw new Error(`Book ${id} doesn't exist.`);
+      }
+      if (name) {
+        book.name = name;
+      }
+      if (price) {
+        book.price = price;
+      }
+      return book;
     },
   },
 };
