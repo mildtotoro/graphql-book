@@ -1,11 +1,61 @@
 const { GraphQLServer } = require("graphql-yoga");
+const books = [
+  {
+    id: "1",
+    name: "harry 1",
+    price: 210,
+    isTopTen: true,
+    publisher: {
+      name: "naanmee book",
+      author: "JK Roling",
+      edition: 1,
+    },
+  },
+  {
+    id: "2",
+    name: "อย่ายอม",
+    price: 390,
+    isTopTen: false,
+    publisher: {
+      name: "amarin book",
+      author: "Henry",
+      edition: 1,
+    },
+  },
+  {
+    id: "3",
+    name: "sapiens",
+    price: 439,
+    isTopTen: true,
+    publisher: {
+      name: "naanmee book",
+      author: "ใครวะ",
+      edition: 3,
+    },
+  },
+];
 
 // Schemas
 const typeDefs = `
-    type = Query {
+    type Query {
         name: String!
-        price: Int!,
+        price: Int!
         isTopTen: Boolean
+        numbers: [Int!]!
+        publisher: publisher
+        books: [book!]!
+    }
+
+    type publisher {
+        name: String!,
+        author: String!,
+        edition: Int
+    }
+
+    type book {
+        id: ID!,
+        name: String!
+        publisher: publisher
     }
 `;
 
@@ -20,6 +70,19 @@ const resolvers = {
     isTopTen() {
       return null;
     },
+    numbers() {
+      return [10, 20, 30, 40];
+    },
+    publisher() {
+      return {
+        name: "naanmee book",
+        author: "JK Roling",
+        edition: 1,
+      };
+    },
+    books() {
+      return books;
+    },
   },
 };
 
@@ -30,7 +93,7 @@ const server = new GraphQLServer({
 
 const options = {
   port: 4000,
-  entpoing: "/graphql",
+  endpoint: "/graphql",
 };
 
 server.start(options, ({ port }) => {
