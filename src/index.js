@@ -63,6 +63,7 @@ const typeDefs = `
     type Mutation {
         addBook(name: String!, price: Int!): [Book!]!
         updateBook(id: ID!, name: String, price: Int): Book!
+        deleteBook(id: ID!): Book!
     }
 `;
 
@@ -118,6 +119,18 @@ const resolvers = {
         book.price = price;
       }
       return book;
+    },
+    deleteBook(parent, args, ctx, info) {
+      const { id } = args;
+      const index = books.findIndex((book) => {
+        return book.id === id;
+      });
+      if (index === -1) {
+        throw new Error(`Book with id ${id} doesn't exists.`);
+      }
+
+      const deletedBook = books.splice(index, 1);
+      return deletedBook[0];
     },
   },
 };
